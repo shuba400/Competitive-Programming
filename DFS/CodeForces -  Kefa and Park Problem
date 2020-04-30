@@ -1,0 +1,65 @@
+//Question link - https://codeforces.com/contest/580/problem/C
+/*
+Relatively straight forward question of implementation of DFS technique with one additional parametre and that is keeping in account the number of consecutive cats 
+in a path.
+So if any path have cats more than the maximum quantity consecutively  we do not have to go further in that particular path
+Since I am more comforatable in iterative approach of questions and editorial to this question only does it by recursive I decided to upload this answer.
+
+*/
+
+
+#include<bits/stdc++.h>
+using namespace std;
+	
+#define ll long long int
+#define pb push_back
+#define rep(i , j , n) for(ll i = j ; i < n ; i++)
+#define per(i , j , n) for(ll i = j ; i >= n ; i--)
+
+ 
+int main(){
+	int n,m;
+	cin >> n >> m;
+	int a[n + 1];
+	bool vis[n + 1];
+	for(int i = 1; i <= n; i++){
+		cin >> a[i];
+		vis[i] = false;                       
+	}
+
+	vector<int> adj[n + 1];
+	for(int i = 0; i < n - 1; i++){
+		int a,b;
+		cin >> a >> b;
+		adj[a].pb(b);
+		adj[b].pb(a);                        
+
+	}
+	int ans = 0;
+	stack<int> s;
+	s.push(1);
+	vis[1] = true;                  
+	while(!(s.empty())){
+		int x = s.top();
+		s.pop();                             //Till here normal stuff of graphs and inputs given in question
+		int noneb = 0;                       //Checks if we are in leaf node or not(If there are no unvisited niegbors of node then we are in leaf node)
+		for(int i = 0; i < adj[x].size(); i++){
+			if(vis[adj[x][i]] == false){
+				noneb++;                     //Increament of unvisited neigbour node by 1
+				vis[adj[x][i]] = true;
+				if(a[adj[x][i]] == 0) s.push(adj[x][i]);          //If this node does not have a cat then cosecutive cats upto this point can be taken as 0 
+				else if(a[adj[x][i]] == 1){
+					if(a[adj[x][i]] + a[x] <= m){               //If this node have cats than consecutiveness depends on previos or parent node and by adding its value 
+																//to this node
+						s.push(adj[x][i]);                      //If number of consecutive cats surpasses m than no need to go any further hence not pushing this node inside the stack
+						a[adj[x][i]] += a[x];
+						}
+				}
+			}
+		}
+		if(noneb == 0) ans++;               //If there were no unvisted neigbours than we have reached the leaf node of required path
+
+
+	}
+	cout << ans;
+}
