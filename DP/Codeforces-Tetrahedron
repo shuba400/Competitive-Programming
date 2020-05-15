@@ -1,0 +1,76 @@
+/* Problem Link - https://codeforces.com/contest/166/problem/E 
+Good Question to practice binary exponential and Effective computation of Fibonacci numbers or similar kind of function
+Mathematically We can say by using D[n] = a[n - 1] + b[n - 1] + c[n - 1] where x[n] is number of ways of reaching at a point x by following n paths (Using basic DP)
+We can similarly say that a[i] = D[i - 1] + b[i - 1] + c[i - 1]
+Now by observation we can also say that a[i] = b[i] = c[i] by symmetry
+So lets replace them with a variable x[i] 
+So forming the equation we will get 
+D[n] = 3x[n - 1]
+x[i] = D[i - 1] + 2x[i - 1]
+therefore
+x[i] = 2x[i - 1] + 3x[i - 2]
+and final answer would be 3*x[n]
+Also the base condition is that D[2] = 3 and D[1] = 0 or x[1] = 1 and x[0] = 0
+so we our final result is similar to fibonacci series which can be effectively calculates using binary exponential
+*/
+
+
+#include<bits/stdc++.h>
+using namespace std;
+
+#define ll long long int
+#define pb push_back
+#define rep(i , j , n) for(ll i = j ; i < n ; i++)
+#define per(i , j , n) for(ll i = j ; i >= n ; i--)
+ll m =  1000000007;
+
+vector<vector<ll>> MatMul(vector<vector<ll>> a,vector<vector<ll>> b){
+	vector<ll> v1(2),v2(2);
+	
+		v1[0] =( (a[0][0]*b[0][0]) + (a[0][1] * b[1][0])) % m;
+		v1[1] =( (a[0][0]*b[0][1]) + (a[0][1] * b[1][1])) % m;
+		v2[0] =( (a[1][0]*b[0][0]) + (a[1][1] * b[1][0])) % m;
+		v2[1] =( (a[1][0]*b[0][1]) + (a[1][1] * b[1][1])) % m;
+	
+	vector<vector<ll>> ans;
+	ans.pb(v1);
+	ans.pb(v2);
+	return ans;
+
+}
+
+ll solve(ll n){
+	if(n - 2 < 0) return 0;
+	ll n1 = n - 2;
+	vector<vector<ll>> x(2);
+	vector<vector<ll>> ans(2);
+	x[0].pb(2);
+	x[0].pb(3);
+	x[1].pb(1);
+	x[1].pb(0);
+	ans[0].pb(1);
+	ans[0].pb(0);
+	ans[1].pb(0);
+	ans[1].pb(1);
+
+	while(n1 > 0){
+		if(n1 & 1){
+			ans = MatMul(x,ans);
+		}
+
+		x = MatMul(x,x);
+
+		n1 = n1 >> 1;
+
+	}
+	return (3*(ans[0][0]))%m;
+
+}
+
+
+
+int main(){
+	ll n;
+	cin >> n;
+	cout << solve(n) << endl;
+}
