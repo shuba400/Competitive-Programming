@@ -1,0 +1,86 @@
+/*  https://atcoder.jp/contests/abc173/tasks/abc173_c
+    Key takeaways - Use of bitmasking to generate all the subsets of a set when constraints are low.
+*/
+
+
+
+#include<bits/stdc++.h>
+#define _USE_MATH_DEFINES
+using namespace std;
+    
+#define ll long long int
+#define pb push_back
+#define rep(i , j , n) for(ll i = j ; i < n ; i++)
+#define pre(i , j , n) for(ll i = j ; i >= n ; i--)
+#define all(x) x.begin(), x.end()
+typedef pair<int, int>	pii;
+typedef pair<ll, ll>	pl;
+typedef vector<int>		vi;
+typedef vector<ll>		vll;
+typedef vector<bool>	vb;
+
+
+
+void solve(){
+    ll h,w,counter;
+    cin >> h >> w >> counter;
+    ll grid[h][w];
+    ll tot = 0;
+    rep(i,0,h){
+        rep(j,0,w){
+            char c;
+            cin >> c;
+            if(c == '.') grid[i][j] = 0;
+            else grid[i][j] = 1;
+            
+            if(grid[i][j] == 1) tot++;
+
+        }
+    }
+    ll ans = 0;
+    ll h1 = 1,w1 = 1;
+    rep(i,0,h) h1 *= 2;
+    rep(i,0,w) w1 *= 2;
+    vector<vb> vis;
+    rep(i,0,h1){
+        rep(j,0,w1){
+            vis = vector<vector<bool>>(h,vector<bool> (w,false)); 
+            ll p = 0,temp = 0;
+            while(p <= 6){
+                if(((i >> p) & 1)){
+                    rep(k,0,w){
+                        if(!vis[p][k] && grid[p][k] == 1){
+                            vis[p][k] = true;
+                            temp++;
+                        }
+                    }
+                }
+                p++;
+            }
+            p = 0;
+            while(p <= 6){
+                if(((j >> p) & 1)){
+                    rep(k,0,h){
+                        if(!vis[k][p] && grid[k][p] == 1){
+                            vis[k][p] = true;
+                            temp++;
+                        }
+                    }
+                }
+                p++;
+            }
+            if((tot - temp) == counter) ans++;
+
+        }
+    }
+    cout << ans;
+}
+
+int main(){
+	ll t = 1;
+	// cin >> t;
+	rep(i,0,t){
+		solve();
+	}
+
+}
